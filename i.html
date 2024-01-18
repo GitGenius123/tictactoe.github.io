@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f3f3f3;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.game-area {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-gap: 5px;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    border: 2px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cell:hover {
+    background-color: #f0f0f0;
+}
+
+#result {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #333;
+}
+
+button {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4caf50;
+    color: #fff;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+    </style>
+</head>
+
+<body>
+    <h1>Tic Tac Toe Game</h1>
+    <div class="game-area">
+        <div class="grid">
+            <div class="cell" onclick="handleClick(0)"></div>
+            <div class="cell" onclick="handleClick(1)"></div>
+            <div class="cell" onclick="handleClick(2)"></div>
+            <div class="cell" onclick="handleClick(3)"></div>
+            <div class="cell" onclick="handleClick(4)"></div>
+            <div class="cell" onclick="handleClick(5)"></div>
+            <div class="cell" onclick="handleClick(6)"></div>
+            <div class="cell" onclick="handleClick(7)"></div>
+            <div class="cell" onclick="handleClick(8)"></div>
+        </div>
+    </div>
+    <p id="result"></p>
+    <button onclick="resetGame()">Reset Game</button>
+    <script>
+        let currentPlayer = 'X';
+        let cells = Array.from(document.querySelectorAll('.cell'));
+        let gameActive = true;
+        let moves = 0;
+
+        // Winning combinations
+        const winCombos = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+
+        // Function to handle cell click
+        function handleClick(cellIndex) {
+            if (!gameActive || cells[cellIndex].textContent !== '') return;
+
+            cells[cellIndex].textContent = currentPlayer;
+            moves++;
+
+            checkWin();
+            checkDraw();
+
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        }
+
+        // Function to check for a win
+        function checkWin() {
+            for (let combo of winCombos) {
+                const [a, b, c] = combo;
+                if (cells[a].textContent !== '' &&
+                    cells[a].textContent === cells[b].textContent &&
+                    cells[a].textContent === cells[c].textContent) {
+                    gameActive = false;
+                    document.getElementById('result').innerText = `Player ${cells[a].textContent} wins!`;
+                    return;
+                }
+            }
+        }
+
+        // Function to check for a draw
+        function checkDraw() {
+            if (moves === 9 && gameActive) {
+                gameActive = false;
+                document.getElementById('result').innerText = 'It\'s a draw!';
+            }
+        }
+
+        // Function to reset the game
+        function resetGame() {
+            currentPlayer = 'X';
+            gameActive = true;
+            moves = 0;
+            cells.forEach(cell => {
+                cell.textContent = '';
+            });
+            document.getElementById('result').innerText = '';
+        }
+
+        // Event listeners for cell clicks
+        cells.forEach(cell => {
+            cell.addEventListener('click', () => handleClick(cells.indexOf(cell)));
+        });
+
+    </script>
+</body>
+
+</html>
